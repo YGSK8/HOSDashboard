@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "vTIh0lFHiYJGlk1ht8ZLVXr76IObdS0SmRk2Ok3F40k=",
+  "Source": "HOSDashboard.Api",
+  "BasePath": "_content/HOSDashboard.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

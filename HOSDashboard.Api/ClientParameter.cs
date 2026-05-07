@@ -1,0 +1,1 @@
+public record ClientParameter(string Name, string Value);

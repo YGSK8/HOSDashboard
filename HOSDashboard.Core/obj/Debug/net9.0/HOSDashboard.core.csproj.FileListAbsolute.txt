@@ -1,0 +1,12 @@
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/bin/Debug/net9.0/HOSDashboard.core.deps.json
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/bin/Debug/net9.0/HOSDashboard.core.dll
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/bin/Debug/net9.0/HOSDashboard.core.pdb
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.csproj.AssemblyReference.cache
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.AssemblyInfoInputs.cache
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.AssemblyInfo.cs
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.csproj.CoreCompileInputs.cache
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.dll
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/refint/HOSDashboard.core.dll
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.pdb
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/ref/HOSDashboard.core.dll
