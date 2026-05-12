@@ -10,3 +10,4 @@
 /Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/refint/HOSDashboard.core.dll
 /Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.pdb
 /Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/ref/HOSDashboard.core.dll
+/Users/yanishgooradoo/HOSDashboard/HOSDashboard.Core/obj/Debug/net9.0/HOSDashboard.core.sourcelink.json

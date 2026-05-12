@@ -30,16 +30,15 @@ public class DeviceStatusQuery
         }
         _sqlquery = fieldselection+table+whereclause;
     }
-    public BigQueryResults Execute(BigQueryClient client)
+    public async Task<BigQueryResults> Execute(BigQueryClient client)
     {
         BigQueryResults results=null;
         foreach(string region in _regions)
         {
             ConstructQuery(region);
-            Console.WriteLine($"attempting {region}");
             if(client.ExecuteQuery(_sqlquery,_parameters).TotalRows != 0)
             {
-                results = client.ExecuteQuery(_sqlquery,_parameters);
+                results = await client.ExecuteQueryAsync(_sqlquery,_parameters);
                 break;
             }
         }

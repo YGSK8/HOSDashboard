@@ -9,7 +9,7 @@ public class HOSController : ControllerBase
         _service = service;
     }
     [HttpPost("logs")]
-    public IActionResult GetLogs([FromBody] ClientParameter[] parameters)
+    public async Task<IActionResult> GetLogs([FromBody] ClientParameter[] parameters)
     {
         Parameter[] ClientParameters = new Parameter[parameters.Length];
         for(int x = 0; x < parameters.Length; x++)
@@ -20,12 +20,12 @@ public class HOSController : ControllerBase
         RequestParameters requestParameters = new RequestParameters(ClientParameters);
         try
         {
-        Dashboard dashboard = new Dashboard(_service,requestParameters);
+        Dashboard dashboard = await Dashboard.GetDashboard(_service,requestParameters);
         return Ok(dashboard.DutyStatusLogRecords.Count);
         }
         catch(Exception e)
         {
-            return StatusCode(500,e.Message);
+            return StatusCode(500,e.ToString());
         }
     }
 

@@ -27,10 +27,10 @@ public class DutyStatusLogQuery
         string orderby = "ORDER BY DateTime, EditDateTime, StreamDateTime ASC";
         _sqlquery = fieldselection+table+whereclause+orderby;
     }
-    public BigQueryResults Execute(BigQueryClient client)
+    public async Task<BigQueryResults> Execute(BigQueryClient client)
     {
         
-        return client.ExecuteQuery(_sqlquery,Parameters);
+        return await client.ExecuteQueryAsync(_sqlquery,Parameters);
     }
 
 }

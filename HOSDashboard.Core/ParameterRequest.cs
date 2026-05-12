@@ -17,8 +17,8 @@ public class RequestParameters
 }
 public class SchemaWithBigQueryType
 {
-    public Dictionary<string,BigQueryDbType>Schema {get;}=new Dictionary<string,BigQueryDbType>();
-    public static Dictionary<string,string>TableFieldSchemaToBigQueryDbType=new Dictionary<string, string>
+    public Dictionary<string,BigQueryDbType>Schema {get;set;}=new Dictionary<string,BigQueryDbType>();
+    public static Dictionary<string,string>TableFieldSchemaToBigQueryDbType {get;set;}=new Dictionary<string, string>
     {
         ["STRING"]="String",
         ["BYTES"]="Bytes",
@@ -36,19 +36,22 @@ public class SchemaWithBigQueryType
         ["BIGNUMERIC"]="BigNumeric",
         ["JSON"]="Json",
     };
-    public SchemaWithBigQueryType(BigQueryClient client, string projectId,string dataset,string tablename)
+    private SchemaWithBigQueryType(){}
+    public async static Task<SchemaWithBigQueryType> GetSchema(BigQueryClient client, string projectId,string dataset,string tablename)
     {
-        BigQueryTable table = client.GetTable(projectId,dataset,tablename);
+        SchemaWithBigQueryType tableSchema = new SchemaWithBigQueryType();
+        BigQueryTable table = await client.GetTableAsync(projectId,dataset,tablename);
         TableSchema schema = table.Schema;
-        foreach(TableFieldSchema field in schema.Fields)
+        foreach (TableFieldSchema field in schema.Fields)
         {
             BigQueryDbType type;
             if(!Enum.TryParse(TableFieldSchemaToBigQueryDbType[field.Type],out type))
             {
-                throw new InvalidEnumArgumentException();
+                 throw new InvalidEnumArgumentException();
             }
-            Schema[field.Name]=type;
+            tableSchema.Schema[field.Name]=type;
         }
+        return tableSchema;
     }
 
 }

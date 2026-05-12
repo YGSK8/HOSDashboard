@@ -18,9 +18,9 @@ public class DatabaseGuidQuery
         string limit = "LIMIT 1";
         _sqlquery = fieldselection + table + whereclause + orderby + limit;
     }
-    public BigQueryResults Execute(BigQueryClient client)
+    public async Task<BigQueryResults> Execute(BigQueryClient client)
     {
-            BigQueryResults results = client.ExecuteQuery(_sqlquery,Parameters);
+            BigQueryResults results = await client.ExecuteQueryAsync(_sqlquery,Parameters);
             if(results.TotalRows == 0) throw new Exception($"Unable to find guid of the database provided");
             else return results;
     }
