@@ -29,9 +29,9 @@ public class HOSController : ControllerBase
         {
             if (e.Message.Contains("reauth related error (invalid_rapt)")||e.Message.Contains("Token has been expired or revoked")||e.Message.Contains("application_default_credentials.json"))
             {
-                return StatusCode(500,$"run <gcloud auth application-default login> in terminal to reset your Google Application Default Credentials (ADC) for local development.\n Message:{e.Message}");
+                return StatusCode(500,$"run <gcloud auth application-default login> in terminal to reset your Google Application Default Credentials (ADC) for local development.\n Message:{e.Message} \n Trace:{e.StackTrace}");
             }
-            return StatusCode(500,e.Message);
+            return StatusCode(500,$"Message:{e.Message}\nTrace:{e.StackTrace}");
         }
     }
 

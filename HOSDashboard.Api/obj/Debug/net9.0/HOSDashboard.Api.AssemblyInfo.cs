@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HOSDashboard.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+81aac453dddf43f9a0357f69064414d936ffc716")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+792a1ad6458a4df45e31eca41988a8b4155ac9c8")]
 [assembly: System.Reflection.AssemblyProductAttribute("HOSDashboard.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HOSDashboard.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
