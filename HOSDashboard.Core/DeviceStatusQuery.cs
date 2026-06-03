@@ -36,7 +36,7 @@ public class DeviceStatusQuery
         foreach(string region in _regions)
         {
             ConstructQuery(region);
-            if(client.ExecuteQuery(_sqlquery,_parameters).TotalRows != 0)
+            if((await client.ExecuteQueryAsync(_sqlquery,_parameters)).TotalRows != 0)
             {
                 results = await client.ExecuteQueryAsync(_sqlquery,_parameters);
                 break;

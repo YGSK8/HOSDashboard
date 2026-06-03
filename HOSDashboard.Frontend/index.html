@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>HOS Dashboard</title>
+</head>
+<body>
+    <h1>Why use Big Query? DutyStatusLogs table </h1>
+    <div id="required-fields">
+        <form id="form">
+            <p>Either Company Guid or Database Name should be provided</p>
+            <span id="dbInputError" style="color: red;display: none;" class="refreshable">Enter Company guid OR database name!</span>
+            <label for="Guid">Company Guid:</label>
+            <input type="text" id="Guid"><br><br>
+            <label for="DatabaseName">Database name:</label>
+            <input type="text" id="DatabaseName"><br><br>
+            <p>Either Serial Number or HardwareId should be provided</p>
+            <span id="deviceInputError" style="color:red;display: none;" class="refreshable">Enter HardwareId OR Serial Number!</span>
+            <label for="SerialNo">Serial Number:</label>
+            <input type="text" id="SerialNo"><br><br>
+            <label for="HardwareId">HardwareId:</label>
+            <input type="text" id="HardwareId"><br><br>
+            <p>From Date And To Date are mandatory</p>
+            <span id="dateInputError" style="color: red;display: none;" class="refreshable">BOTH from and to dates must be provided</span>
+            <label for="_FROMPARTITIONDATE">From Date:</label>
+            <input type="date" id="_FROMPARTITIONDATE"><br><br>
+            <label for="_TOPARTITIONDATE">To Date:</label>
+            <input type="date" id="_TOPARTITIONDATE"><br><br>
+        </form>        
+        <button id="run">Run Query</button>
+        <p id="errormessage" style="color: red;display: none;"></p>
+    </div>
+    <div id="results">
+        <p id="deviceInfo" class="refreshable"></p>
+        <p id="databaseInfo" class="refreshable"></p>
+        <p id="countoflogs" class="refreshable"></p>
+        <table id="table" class="grid-table table-container"></table><br>
+        <button id="download">Download csv</button>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

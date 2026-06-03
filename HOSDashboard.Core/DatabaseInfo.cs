@@ -1,0 +1,1 @@
+public record DatatabaseInfo(string Guid, string DatabaseName);

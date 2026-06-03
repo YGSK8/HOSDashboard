@@ -45,3 +45,4 @@ public class DutyStatusLogRecord
         EngineHours = (double?)row["EngineHours"];
     }
 }
+

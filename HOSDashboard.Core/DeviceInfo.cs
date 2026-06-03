@@ -1,0 +1,1 @@
+public record DeviceInfo(string DatabaseName, string SerialNo, string HardwareId, string DeviceId);

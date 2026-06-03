@@ -3,7 +3,7 @@ using Google.Apis.Bigquery.v2.Data;
 using Google.Cloud.BigQuery.V2;
 public class Dashboard
 {
-    private readonly BigQueryClient _client;
+    private BigQueryClient _client;
     public List<DutyStatusLogRecord> DutyStatusLogRecords{get;}=new List<DutyStatusLogRecord>();
     public Dictionary<string,BigQueryDbType>DeviceCurrentStatusDailySchema {get;set;}
     public Dictionary<string,BigQueryDbType>ClientInfoSchema{get;set;}
@@ -12,6 +12,8 @@ public class Dashboard
     public BigQueryParameter TOPARTITIONDATE{get;set;}
     public BigQueryParameter CompanyGuid{get;set;}
     public BigQueryParameter HardwareId{get;set;}
+    public List<DatatabaseInfo> DatabaseInfo{get;}=new List<DatatabaseInfo>();
+    public List<DeviceInfo> DeviceInfo{get;}=new List<DeviceInfo>();
     private Dashboard(BigQueryService service)
     {
         _client = service.Client;
@@ -19,28 +21,50 @@ public class Dashboard
     public static async Task<Dashboard> GetDashboard(BigQueryService service,RequestParameters parameters)
     {
         Dashboard dashboard = new Dashboard(service);
-        await dashboard.SchemaInitalizer();
+        try
+        {
+            await dashboard.SchemaInitalizer();
+        }
+        catch
+        {
+            dashboard._client = service.RefreshClient();
+            await dashboard.SchemaInitalizer();
+        }
         Parameter fromPartitionDate = parameters.Parameters.Find(parameter => parameter.Name=="_FROMPARTITIONDATE")!;
         dashboard.FROMPARTITIONDATE = new BigQueryParameter(fromPartitionDate.Name,BigQueryDbType.Date,fromPartitionDate.Value);
         Parameter toPartitionDate = parameters.Parameters.Find(parameter=>parameter.Name=="_TOPARTITIONDATE")!;
         dashboard.TOPARTITIONDATE = new BigQueryParameter(toPartitionDate.Name,BigQueryDbType.Date,toPartitionDate.Value);
         Parameter guid;
+        Task databaseInfo;
         if (parameters.Parameters.Find(parameter => parameter.Name == "Guid")==null)
         {
             Parameter databaseName = parameters.Parameters.Find(parameter=>parameter.Name=="DatabaseName");
             guid = await dashboard.GetCompanyGuid(databaseName);
+            databaseInfo = dashboard.SetDatabaseInfo(databaseName);
         }
-        else guid = parameters.Parameters.Find(parameter => parameter.Name == "Guid");
+        else
+        {
+            guid = parameters.Parameters.Find(parameter => parameter.Name == "Guid");
+            databaseInfo = dashboard.SetDatabaseInfo(guid);
+        } 
         dashboard.CompanyGuid = new BigQueryParameter(guid.Name,dashboard.DutyStatusLogsSchema["Guid"],guid.Value);
         Parameter hardwareid;
+        Task deviceInfo;
         if(parameters.Parameters.Find(parameter => parameter.Name == "HardwareId") == null)
         {
             Parameter serialNo = parameters.Parameters.Find(parameter=>parameter.Name=="SerialNo");
             hardwareid = await dashboard.GetHardwareId(serialNo);
+            deviceInfo = dashboard.SetDeviceInfo(serialNo);
         }
-        else hardwareid = parameters.Parameters.Find(parameter=>parameter.Name=="HardwareId");
+        else
+        {
+            hardwareid = parameters.Parameters.Find(parameter=>parameter.Name=="HardwareId");
+            deviceInfo = dashboard.SetDeviceInfo(hardwareid);    
+        } 
         dashboard.HardwareId = new BigQueryParameter(hardwareid.Name,dashboard.DutyStatusLogsSchema[hardwareid.Name],hardwareid.Value);
         await dashboard.GetDutyStatusLogs();
+        await deviceInfo;
+        await databaseInfo;
         return dashboard;
     }
     public async Task<Parameter> GetCompanyGuid(Parameter databaseName)//--Returns a parameter with Name: "Guid" and Value: guid in lower case.
@@ -53,11 +77,10 @@ public class Dashboard
         return companyguid;
 
     }
-    public async Task<Parameter> GetHardwareId(Parameter serialNo)//-Uses two parameters CompanyGuid and HardwareId. This is to ensure we get only one row as result since devices can be shared across multiple databases.
+    public async Task<Parameter> GetHardwareId(Parameter serialNo)//-Uses only one parameter i.e SerialNo. Geotab-embedded-prod.Summary only returns one row per device i.e only the masterDB. This is to allow returning results when HOS logs are created in the shared DB 
     {
         BigQueryParameter BQSerialNo = new BigQueryParameter(serialNo.Name,DeviceCurrentStatusDailySchema[serialNo.Name],serialNo.Value);
-        BigQueryParameter BQCompanyGuid = new BigQueryParameter("CompanyGuid",CompanyGuid.Type,CompanyGuid.Value);
-        BigQueryResults results = await new DeviceStatusQuery([BQCompanyGuid,BQSerialNo]).Execute(_client);
+        BigQueryResults results = await new DeviceStatusQuery([BQSerialNo]).Execute(_client);
         List<BigQueryRow> rows = results.ToList();
         BigQueryRow row = rows[0];
         Parameter hardwareid = new Parameter(Name:"HardwareId",Value:row["HardwareId"]);
@@ -77,7 +100,27 @@ public class Dashboard
     public async Task SchemaInitalizer()
     {
         DeviceCurrentStatusDailySchema= (await SchemaWithBigQueryType.GetSchema(_client,"geotab-embedded-prod","Summary_MyG_US","DeviceCurrentStatusDaily")).Schema;
-        ClientInfoSchema = (await SchemaWithBigQueryType.GetSchema(_client,"geotab-myserver","MyGeotab","DutyStatusLogs")).Schema;
+        ClientInfoSchema = (await SchemaWithBigQueryType.GetSchema(_client,"geotab-gateway","Gateway","ClientInfo")).Schema;
         DutyStatusLogsSchema = (await SchemaWithBigQueryType.GetSchema(_client,"geotab-myserver","MyGeotab","DutyStatusLogs")).Schema;
     }
+
+    public async Task SetDeviceInfo(Parameter parameter)
+    {
+        BigQueryParameter deviceParameter = new BigQueryParameter(parameter.Name,DeviceCurrentStatusDailySchema[parameter.Name],parameter.Value);
+        BigQueryResults results = await new DeviceStatusQuery([deviceParameter]).Execute(_client);
+        foreach(BigQueryRow row in results)
+        {
+            DeviceInfo.Add(new DeviceInfo(row["DatabaseName"].ToString(),row["SerialNo"].ToString(),row["HardwareId"].ToString(),row["DeviceId"].ToString()));
+        }
+    }
+    public async Task SetDatabaseInfo(Parameter parameter)
+    {
+        BigQueryParameter databaseParameter = new BigQueryParameter(parameter.Name,ClientInfoSchema[parameter.Name],parameter.Value);
+        BigQueryResults results = await new DatabaseGuidQuery([databaseParameter]).Execute(_client);
+        foreach(BigQueryRow row in results)
+        {
+            DatabaseInfo.Add(new DatatabaseInfo(row["Guid"].ToString(),row["DatabaseName"].ToString()));
+        }
+    }
+
 }
