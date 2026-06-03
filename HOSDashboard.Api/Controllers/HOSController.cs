@@ -1,5 +1,3 @@
-using Google.Cloud.BigQuery.V2;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("hos")]

@@ -16,6 +16,8 @@ const databaseInfo = document.getElementById("databaseInfo");
 const errorMessage = document.getElementById("errormessage");
 const refreshables = document.getElementsByClassName("refreshable");
 const download = document.getElementById("download");
+let currentSerialNo = "";
+let currentDatabaseName = "";
 serialNo.value = "G97E12PYY0901";
 guid.value = "31725dfc-9b55-4e44-9730-acbfec178f6f";
 fromDate.value = "2026-04-01";
@@ -51,14 +53,15 @@ run.addEventListener("click", async () => {
         const keys = firstRecord ? Object.keys(firstRecord) : [];
         countLogs.innerHTML = `Number of rows/count of logs: ${data.dutyStatusLogRecords.length}`;
         deviceInfo.innerHTML = `databaseName: ${data.deviceInfo[0]?.databaseName} serialNo: ${data.deviceInfo[0]?.serialNo} hardwareId: ${data.deviceInfo[0]?.hardwareId} deviceId: ${data.deviceInfo[0]?.deviceId}`;
+        currentSerialNo = `${data.deviceInfo[0]?.serialNo}`;
         databaseInfo.innerHTML = `guid: ${data.databaseInfo[0]?.guid} databaseName: ${data.databaseInfo[0]?.databaseName}`;
+        currentDatabaseName = `${data.databaseInfo[0]?.databaseName}`;
         let tablerowsHtml = '';
         let firstrowcontent = `<th></th>`;
         keys.forEach(key => {
             firstrowcontent += `<th>${key}</th>`;
         });
-        const tableHead = `<thead>${firstrowcontent}</thead>`;
-        const firstrow = `<tr>${tableHead}</tr>`;
+        const tableHead = `<thead><tr>${firstrowcontent}</tr></thead>`;
         let count = 1;
         data.dutyStatusLogRecords.forEach(apirecord => {
             const record = mapToDutyStatusLogRecord(apirecord);
@@ -89,8 +92,22 @@ run.addEventListener("click", async () => {
             `;
         });
         const tableBody = `<tbody>${tablerowsHtml}</tbody>`;
-        table.innerHTML = firstrow + tableBody;
+        table.innerHTML = tableHead + tableBody;
     }
+});
+download.addEventListener("click", () => {
+    const rows = Array.from(table.querySelectorAll("tr"));
+    const csv = rows.map(row => {
+        const cells = Array.from(row.querySelectorAll("th, td")).slice(1); // skip the count column             
+        return cells.map(cell => `"${(cell.textContent ?? "").replace(/"/g, '""')}"`).join(",");
+    }).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hos_logs_${currentDatabaseName}_${currentSerialNo}_${fromDate.value}_${toDate.value}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
 });
 function getParameters() {
     const paramFromDate = { Name: "_FROMPARTITIONDATE", Value: fromDate.value };

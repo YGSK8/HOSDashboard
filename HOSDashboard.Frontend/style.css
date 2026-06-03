@@ -16,3 +16,17 @@
     background-color: white; /* Required for layout */
     z-index: 1;              /* Keeps headers on top */
   }
+
+   .scroll-container {
+      max-height: 400px;
+      overflow-y: auto;
+  }   
+
+    #download {
+      position: sticky;
+      bottom: 0;
+      display: block;
+      width: 100%;
+      background-color: white;
+      padding: 8px;
+  }
