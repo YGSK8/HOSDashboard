@@ -20,7 +20,9 @@ public class HOSController : ControllerBase
         RequestParameters requestParameters = new RequestParameters(ClientParameters);
         try
         {
+        Console.WriteLine("going in try await ");
         Dashboard dashboard = await Dashboard.GetDashboard(_service,requestParameters);
+
         return Ok(new{dashboard.DeviceInfo,dashboard.DatabaseInfo,dashboard.DutyStatusLogRecords});
         }
         catch(Exception e)
